@@ -4,19 +4,19 @@ import bcrypt from "bcrypt";
 const app = express();
 app.use(express.json());
 
-let users = [];
+let usuarios = [];
 
 // Fazer a validação do usuário
 function validId(req, res, next) {
   const userId = parseInt(req.params.id);
   console.log("userId:", userId);
-  const validUser = users.find((user) => user.id === userId);
+  const validUser = usuarios.find((user) => user.id === userId);
 
   if (validUser) {
     console.log("validUser:", validUser);
     next();
   } else {
-    console.log("User not found");
+    console.log("Usuário não encontrado");
     return res.status(400).send("Usuário não encontrado ou não existe");
   }
 }
@@ -25,7 +25,7 @@ function validId(req, res, next) {
 
 app.post("/registro", (req, res) => {
   const { nome, email, password } = req.body;
-  const userExist = users.find((newUser) => newUser.email === email);
+  const userExist = usuarios.find((newUser) => newUser.email === email);
 
   if (userExist) {
     return res
@@ -33,7 +33,7 @@ app.post("/registro", (req, res) => {
       .send("Que pena! já existe um usuário com o mesmo email");
   } else {
     const rounds = 10;
-    const id = users.length + 1;
+    const id = usuarios.length + 1;
     try {
       const bcryptPassword = bcrypt.hashSync(password, rounds);
       const newUser = {
@@ -44,7 +44,7 @@ app.post("/registro", (req, res) => {
         note: [],
       };
 
-      users.push(newUser);
+      usuarios.push(newUser);
       console.log("newUser:", newUser);
       return res.status(200).send("Sua conta foi criada com sucesso!");
     } catch (error) {
@@ -56,7 +56,7 @@ app.post("/registro", (req, res) => {
 // Fazer Login no CRUD
 app.post("/login", (req, res) => {
   const { email, password } = req.body;
-  const user = users.find((user) => user.email === email);
+  const user = usuarios.find((user) => user.email === email);
 
   if (!user) {
     return res.status(401).send("Usuário não encontrado ou não existe");
@@ -69,8 +69,8 @@ app.post("/login", (req, res) => {
 });
 
 // Listar Usuários Cadastrados
-app.get("/users", (req, res) => {
-  res.status(200).send(users);
+app.get("/usuarios", (req, res) => {
+  res.status(200).send(usuarios);
 });
 
-app.listen(8080, () => console.log("Servidor iniciado"));
+app.listen(8080, () => console.log("Servidor iniciado...."));
