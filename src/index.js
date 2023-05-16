@@ -6,21 +6,6 @@ app.use(express.json());
 
 let usuarios = [];
 
-// Fazer a validação do usuário
-function validId(req, res, next) {
-  const userId = parseInt(req.params.id);
-  console.log("userId:", userId);
-  const validUser = usuarios.find((user) => user.id === userId);
-
-  if (validUser) {
-    console.log("validUser:", validUser);
-    next();
-  } else {
-    console.log("Usuário não encontrado");
-    return res.status(400).send("Usuário não encontrado ou não existe");
-  }
-}
-
 //Fazer o registro do usuário no CRUD
 
 app.post("/registro", (req, res) => {
@@ -41,7 +26,7 @@ app.post("/registro", (req, res) => {
         nome,
         email,
         password: bcryptPassword,
-        note: [],
+        recados: [],
       };
 
       usuarios.push(newUser);
@@ -71,6 +56,66 @@ app.post("/login", (req, res) => {
 // Listar Usuários Cadastrados
 app.get("/usuarios", (req, res) => {
   res.status(200).send(usuarios);
+});
+
+// Criação de Recado
+
+app.post("/usuarios/:id/recados", (req, res) => {
+  const { titulo, mensagem } = req.body;
+  const idRecados = usuarios.length + 1;
+  const userId = parseInt(req.params.id);
+  const buscarUsuario = usuarios.find((users) => users.id === userId);
+
+  if (!buscarUsuario) {
+    return res.status(401).send("Usuário não encontrado ou não existe");
+  }
+
+  const newRecado = { id: idRecados, titulo: titulo, mensagem: mensagem };
+
+  buscarUsuario.recados.push(newRecado);
+
+  res.status(200).send("Recado criado com sucesso!!");
+});
+
+// Edição de Recado
+app.put("/usuarios/:id/recados/:idEditar", (req, res) => {
+  const { titulo, mensagem } = req.body;
+  const idUsuario = parseInt(req.params.id);
+  const buscarUsuario = usuarios.find((users) => users.id === idUsuario);
+  const idEditar = parseInt(req.params.idEditar);
+  const recadoEditado = buscarUsuario.recados.findIndex(
+    (recadosEditar) => recadosEditar.id === idEditar
+  );
+
+  if (!idUsuario || !idEditar) {
+    return res
+      .status(401)
+      .send("Usuário ou Recado não encontrado ou não existe");
+  }
+
+  buscarUsuario.recados[recadoEditado].titulo = titulo;
+  buscarUsuario.recados[recadoEditado].mensagem = mensagem;
+
+  res.status(200).send("Recado editado com sucesso!!");
+});
+
+// Deletar Recados
+app.delete("/usuarios/:id/recados/:idEditar/excluir", (req, res) => {
+  const idUsuario = parseInt(req.params.id);
+  const buscarUsuario = usuarios.find((users) => users.id === idUsuario);
+  const idEditar = parseInt(req.params.idEditar);
+  const indexRecado = buscarUsuario.recados.findIndex(
+    (recadosEditar) => recadosEditar.id === idEditar
+  );
+
+  if (indexRecado > 0) {
+    return res.status(401).send("Recado não encontrado ou não existe");
+  }
+
+  buscarUsuario.recados = buscarUsuario.recados.filter(
+    (recado) => recado.id !== idEditar
+  );
+  res.status(200).send("Recado excluido com sucesso!!");
 });
 
 app.listen(8080, () => console.log("Servidor iniciado...."));
