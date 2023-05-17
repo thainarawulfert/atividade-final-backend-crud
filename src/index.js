@@ -18,7 +18,7 @@ app.post("/registro", (req, res) => {
       .send("Que pena! já existe um usuário com o mesmo email");
   } else {
     const rounds = 10;
-    const id = usuarios.length + 1;
+    const id = Math.floor(Math.random() * 1000000);
     try {
       const bcryptPassword = bcrypt.hashSync(password, rounds);
       const newUser = {
@@ -62,7 +62,7 @@ app.get("/usuarios", (req, res) => {
 
 app.post("/usuarios/:id/recados", (req, res) => {
   const { titulo, mensagem } = req.body;
-  const idRecados = usuarios.length + 1;
+  const idRecados = Math.floor(Math.random() * 1000000);
   const userId = parseInt(req.params.id);
   const buscarUsuario = usuarios.find((users) => users.id === userId);
 
