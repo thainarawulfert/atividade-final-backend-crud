@@ -26,13 +26,13 @@ Cria um novo usuário no sistema. Você deve fornecer o nome, email e senha no c
 Realiza o login de um usuário. Você deve fornecer o email e a senha no corpo da requisição.
 
 **GET /usuarios:**
-Lista todos os usuários com suas notas
+Lista todos os usuários com seus recados
 
 **POST /usuarios/:id/recados:**
-Cria um novo recado para o usuário com o ID específico. Você deve fornecer o título e a descrição do recado no corpo da requisição.
+Cria um novo recado para o usuário com o ID específico. Você deve fornecer o título e a mensagem do recado no corpo da requisição.
 
 **PUT /usuarios/:id/recados/:idEditar:**
-Atualiza uma nota com ID específico para um usuário com ID específico. Você deve fornecer o título e a descrição para atualizar o recado no corpo da requisição.
+Atualiza uma nota com ID específico para um usuário com ID específico. Você deve fornecer o título e a mensagem para atualizar o recado no corpo da requisição.
 
 **DELETE /usuarios/:id/recados/:idEditar/excluir:**
-Excluir uma nota com ID específico para um usuário com ID específico
+Excluir um recado com ID específico para um usuário com ID específico
