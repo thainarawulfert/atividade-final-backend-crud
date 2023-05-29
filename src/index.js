@@ -71,7 +71,7 @@ app.post("/registro", (req, res) => {
 
       usuarios.push(newUser);
       console.log("newUser:", newUser);
-      return res.status(200).send("Sua conta foi criada com sucesso!");
+      return res.status(200).json("Sua conta foi criada com sucesso!");
     } catch (error) {
       console.log(error);
     }
@@ -90,7 +90,7 @@ app.post("/login", (req, res) => {
   if (!passwordMatch || user.email !== email) {
     return res.status(401).send("Email ou senha incorretos!");
   }
-  res.status(200).send("Seja bem-vindo ao seu CRUD de Recados");
+  res.status(200).json(user.id);
 });
 
 // Listar Usuários Cadastrados
@@ -98,6 +98,24 @@ app.get("/usuarios", (req, res) => {
   res.status(200).send(usuarios);
 });
 
+//Listar Recados
+app.get("/listarRecados/:id", validarUsuario, (req, res) => {
+  const id = Number(req.params.id);
+  const indexPessoa = usuarios.find((listaUsuarios) => listaUsuarios.id === id);
+  const page = Number(req.query.page) || 1;
+  const pages = Math.ceil(indexPessoa.recados?.length / 8);
+  const startIndex = (page - 1) * 8;
+  const aux = [...indexPessoa.recados];
+
+  const recadoDaPessoa = aux.splice(startIndex, 8);
+
+  return res.json({
+    total: indexPessoa.recados.length,
+    paginaAtual: page,
+    recados: recadoDaPessoa,
+    pages,
+  });
+});
 // Criação de Recado
 
 app.post("/usuarios/:id/recados", validarUsuario, (req, res) => {
